@@ -21,7 +21,17 @@ var budgetController = (function() {
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+        budget: 0,
+        percentage: -1
+    };
+
+    var calculateTotal = function(type) {
+        var sum = 0;
+        data.allItems[type].forEach(function(single) {
+            sum += single.value;
+        });
+        data.totals[type] = sum;
     };
 
     return {
@@ -46,6 +56,32 @@ var budgetController = (function() {
             data.allItems[type].push(newItem);
     
             return newItem;
+        },
+
+        calculateBudget: function() {
+
+            // calculate total incomes and expanses
+            calculateTotal('exp');
+            calculateTotal('inc');
+
+            // calculate the budget: income - expanses
+            data.budget = data.totals.inc - data.totals.exp;
+
+            // calculate the % of expanses
+            if (data.totals.inc > 0) {
+                data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            } else {
+                data.percentage = -1;
+            }
+        },
+
+        getBudget: function() {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            }
         },
 
         test: function() {
@@ -139,10 +175,13 @@ var controller = (function(budgetCtrl, UICtrl) {
     var updateBudget = function() {
 
         // calculate the budget
+        budgetCtrl.calculateBudget();
 
         // return the budget
+        var budget = budgetCtrl.getBudget();
 
         // display the budget on UI
+        console.log(budget);
     };
 
     var ctrlAddItem = function() {

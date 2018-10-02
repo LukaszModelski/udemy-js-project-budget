@@ -5,6 +5,19 @@ var budgetController = (function() {
         this.id = id;
         this.description = description;
         this.value = value;
+        this.percentage = -1;
+    };
+
+    Expense.prototype.calcPercentage = function(totalIncome) {
+        if(totalIncome > 0) {
+            this.percentage = Math.round((this.value / totalIncome) * 100);
+        } else {
+            this.percentage = -1;
+        }
+    };
+
+    Expense.prototype.getPercentage = function() {
+        return this.percentage;
     };
 
     var Income = function(id, description, value) {
@@ -88,6 +101,23 @@ var budgetController = (function() {
             } else {
                 data.percentage = -1;
             }
+        },
+
+        calculatePercentage: function() {
+
+            data.allItems.exp.forEach(function(singleExp) {
+                singleExp.calcPercentage(data.totals.inc);
+            }); 
+
+        },
+
+        getPercentages: function() {
+
+            var percArray = data.allItems.exp.map(function(singleExp) {
+                return singleExp.getPercentage();
+            });
+            return percArray;
+
         },
 
         getBudget: function() {
@@ -226,6 +256,19 @@ var controller = (function(budgetCtrl, UICtrl) {
         UIController.displayBudget(budget);
     };
 
+    var updatePrecentages = function() {
+        var percArray;
+
+        // calculate percentages
+        budgetCtrl.calculatePercentage();
+
+        // read precentage form budget ctrl
+        percArray = budgetCtrl.getPercentages();
+
+        // update UI with %
+        console.log(percArray);
+    };
+
     var ctrlDeleteItem = function(event) {
         var item, itemID, itemType;
 
@@ -246,7 +289,10 @@ var controller = (function(budgetCtrl, UICtrl) {
         UICtrl.deleteListItem(itemType + '-' + itemID);
 
         // update budget
-        updateBudget(); 
+        updateBudget();
+
+        // update %
+        updatePrecentages();
     };
 
     var ctrlAddItem = function() {
@@ -267,6 +313,9 @@ var controller = (function(budgetCtrl, UICtrl) {
             
             // update budget
             updateBudget();
+
+            // update %
+            updatePrecentages();
         }
 
     };

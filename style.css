@@ -24,8 +24,6 @@ body {
 }
 
 .right { float: right; }
-.red { color: #FF5049 !important; }
-.red-focus:focus { border: 1px solid #FF5049 !important; }
 
 /**********************************************
 *** TOP PART
@@ -174,6 +172,17 @@ body {
 }
 
 .add__btn:focus { outline: none; }
+
+.add__container.red .add__type:focus,
+.add__container.red .add__description:focus,
+.add__container.red .add__value:focus{
+    border-color: red;
+}
+
+.add__container.red .ion-ios-checkmark-outline{
+    color: red;
+}
+
 
 /***** LISTS *****/
 .container {

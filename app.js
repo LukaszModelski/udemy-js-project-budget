@@ -150,6 +150,7 @@ var UIController = (function() {
         incomesLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
+        addContainer: '.add__container',
         container: '.container',
         percenatgeLabels: '.item__percentage',
         date: '.budget__title--month'
@@ -295,6 +296,11 @@ var controller = (function(budgetCtrl, UICtrl) {
 
         // delete item
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        // switch from incom to expense
+        document.querySelector(DOM.inputType).addEventListener('change', function() {
+            document.querySelector(DOM.addContainer).classList.toggle('red');
+        });
     };
 
     var updateBudget = function() {
